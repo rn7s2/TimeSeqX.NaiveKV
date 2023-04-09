@@ -7,16 +7,12 @@ public class Main {
         NaiveKV kv = new NaiveKV("1.kv");
 
 //        for (int i = 0; i < 1_0000; i++) {
-//            String randString = String.valueOf(Math.random());
-//            kv.put("key" + i, randString);
+//            kv.put("key" + i, "value" + i);
 //        }
-//
-//        System.out.println(kv.getSegmentCount());
 
-        //kv.put("你好", "世界");
-        //System.out.println(kv.get("你好"));
-        //kv.delete("你好");
-        //System.out.println(kv.get("你好"));
+        System.out.println(kv.getSegmentCount());
+
+        System.out.println(kv.get("key9997"));
 
 //        for (int i = 0; i < 1_0000; i++) {
 //            System.out.println("i=" + i + " " + kv.get("key" + i));
