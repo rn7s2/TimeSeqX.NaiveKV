@@ -43,7 +43,11 @@ public final class NaiveKV implements Closeable {
         try {
             // 若最新的片段中有该键，则直接返回
             if (segment.containsKey(key)) {
-                return segment.get(key);
+                String ret = segment.get(key);
+                if (ret.contains("" + (char) 26)) {
+                    return null;
+                }
+                return ret;
             }
 
             // 若最新的片段中没有该键，则从文件中查找
@@ -64,17 +68,28 @@ public final class NaiveKV implements Closeable {
                 file.read(segmentBytes);
                 String segmentString = new String(segmentBytes, StandardCharsets.UTF_16BE);
 
-                // 在本片段中查找键
-                // TODO 改为二分查找
+                // 在本片段中二分查找键
                 String[] segmentParts = segmentString.split("" + (char) 31);
-                for (String segmentPart : segmentParts) {
-                    String[] kv = segmentPart.split(":");
-                    if (kv[0].equals(key)) {
-                        if (kv[1].contains("" + (char) 26)) {
-                            return null;
-                        }
-                        return kv[1];
+                int i = 0, j = segmentParts.length - 1;
+                while (i < j) {
+                    int m = (i + j) / 2;
+                    String[] kv = segmentParts[m].split(":");
+                    int cmp = kv[0].compareTo(key);
+                    if (cmp == 0) {
+                        break;
+                    } else if (cmp < 0) {
+                        i = m + 1;
+                    } else {
+                        j = m - 1;
                     }
+                }
+
+                String[] kv = segmentParts[i].split(":");
+                if (kv[0].equals(key)) {
+                    if (kv[1].contains("" + (char) 26)) {
+                        return null;
+                    }
+                    return kv[1];
                 }
 
                 // 若本片段中没有该键，则继续向前查找
@@ -192,6 +207,10 @@ public final class NaiveKV implements Closeable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void delete(String key) {
+        put(key, "" + (char) 26);
     }
 
     public int getSegmentCount() {

@@ -13,8 +13,10 @@ public class Main {
 //
 //        System.out.println(kv.getSegmentCount());
 
-        kv.put("你好", "世界");
-        System.out.println(kv.get("你好"));
+        //kv.put("你好", "世界");
+        //System.out.println(kv.get("你好"));
+        //kv.delete("你好");
+        //System.out.println(kv.get("你好"));
 
 //        for (int i = 0; i < 1_0000; i++) {
 //            System.out.println("i=" + i + " " + kv.get("key" + i));
