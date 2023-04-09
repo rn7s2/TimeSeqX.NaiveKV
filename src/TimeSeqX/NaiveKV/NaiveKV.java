@@ -132,6 +132,10 @@ public final class NaiveKV implements Closeable {
 
     // 计算合适的分片大小，并重新划分片段
     public void reorganize() throws IOException {
+        if (segment.size() != 0) {
+            flush();
+        }
+
         int pairCount = getPairCount();
         segment_max_capacity = Math.max((int) Math.ceil(pairCount / (SEGMENT_MAX_COUNT / 2.0)), SEGMENT_MAX_CAPACITY_START);
         mergeSegments();
